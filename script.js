@@ -110,7 +110,14 @@ resize();addEventListener("resize",resize);draw();
 /* Premium motion engine: Lenis + GSAP ScrollTrigger + Three.js */
 (function(){
   const progress=document.getElementById('scrollProgress');
-  const lenis=window.Lenis?new Lenis({duration:1.15,smoothWheel:true,smoothTouch:false}):null;
+  const lenis = window.Lenis
+  ? new Lenis({
+      duration: 1.15,
+      smoothWheel: true,
+      smoothTouch: true,
+      syncTouch: true
+    })
+  : null;
   if(lenis){lenis.on('scroll',()=>ScrollTrigger.update());gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);}
   if(window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
   if(progress) window.addEventListener('scroll',()=>progress.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%');
@@ -132,39 +139,147 @@ resize();addEventListener("resize",resize);draw();
       gsap.fromTo([title,text],{y:18,opacity:.35},{y:0,opacity:1,duration:.48,ease:'power2.out',stagger:.05});
     };
     renderScene(0);
-    if(vision){
-      vision.addEventListener('wheel',(event)=>{
-        if(Math.abs(event.deltaY)<8 || storyState.busy) return;
-        const rect=vision.getBoundingClientRect();
-        const inside=rect.top<=window.innerHeight*.28 && rect.bottom>=window.innerHeight*.72;
-        if(!inside) return;
-        if(!storyState.entered){ storyState.entered=true; storyState.index=0; renderScene(0); }
-        const direction=event.deltaY>0?1:-1;
-        const atFirst=storyState.index===0 && direction<0;
-        const atLast=storyState.index===scenes.length-1 && direction>0;
-        // Keep the final research stage visible for one complete scroll gesture.
-        if(atLast){
-          // After Stage 04, one additional wheel gesture advances directly
-          // to the next section instead of requiring several scrolls.
-          const nextSection=document.getElementById('research');
-          if(nextSection){
-            event.preventDefault();
-            storyState.busy=true;
-            nextSection.scrollIntoView({behavior:'smooth',block:'start'});
-            setTimeout(()=>{storyState.busy=false;},700);
-          }
-          return;
+    if (vision) {
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+  function changeVisionScene(direction) {
+    if (storyState.busy) return;
+
+    const atFirst =
+      storyState.index === 0 && direction < 0;
+
+    const atLast =
+      storyState.index === scenes.length - 1 && direction > 0;
+
+    // Allow normal page scrolling above the first stage
+    if (atFirst) return;
+
+    // Move to the next section after Stage 04
+    if (atLast) {
+      const nextSection = document.getElementById("research");
+
+      if (nextSection) {
+        storyState.busy = true;
+
+        if (lenis) {
+          lenis.scrollTo(nextSection, {
+            offset: 0,
+            duration: 1
+          });
+        } else {
+          nextSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
         }
-        if(atFirst && direction<0) return;
-        event.preventDefault();
-        const next=Math.max(0,Math.min(scenes.length-1,storyState.index+direction));
-        if(next===storyState.index) return;
-        storyState.busy=true;
-        storyState.index=next;
-        renderScene(next);
-        setTimeout(()=>storyState.busy=false,520);
-      },{passive:false});
+
+        setTimeout(() => {
+          storyState.busy = false;
+        }, 900);
+      }
+
+      return;
     }
+
+    const next = Math.max(
+      0,
+      Math.min(
+        scenes.length - 1,
+        storyState.index + direction
+      )
+    );
+
+    if (next === storyState.index) return;
+
+    storyState.busy = true;
+    storyState.index = next;
+    renderScene(next);
+
+    setTimeout(() => {
+      storyState.busy = false;
+    }, 550);
+  }
+
+  // Desktop mouse wheel support
+  vision.addEventListener(
+    "wheel",
+    (event) => {
+      const rect = vision.getBoundingClientRect();
+
+      const inside =
+        rect.top <= window.innerHeight * 0.35 &&
+        rect.bottom >= window.innerHeight * 0.65;
+
+      if (!inside || Math.abs(event.deltaY) < 8) return;
+
+      event.preventDefault();
+
+      changeVisionScene(event.deltaY > 0 ? 1 : -1);
+    },
+    { passive: false }
+  );
+
+  // Mobile touch support
+  vision.addEventListener(
+    "touchstart",
+    (event) => {
+      if (event.touches.length !== 1) return;
+
+      touchStartY = event.touches[0].clientY;
+    },
+    { passive: true }
+  );
+
+  vision.addEventListener(
+    "touchend",
+    (event) => {
+      if (!touchStartY || storyState.busy) return;
+
+      touchEndY = event.changedTouches[0].clientY;
+
+      const swipeDistance = touchStartY - touchEndY;
+
+      touchStartY = 0;
+
+      // Ignore small finger movements
+      if (Math.abs(swipeDistance) < 45) return;
+
+      // Swipe up = next stage
+      // Swipe down = previous stage
+      changeVisionScene(swipeDistance > 0 ? 1 : -1);
+    },
+    { passive: true }
+  );
+
+  // Allow users to tap the numbered stages
+  document
+    .querySelectorAll(".story-stepper span")
+    .forEach((step, index) => {
+      step.style.cursor = "pointer";
+      step.setAttribute("role", "button");
+      step.setAttribute("tabindex", "0");
+
+      step.addEventListener("click", () => {
+        if (storyState.busy || index === storyState.index) return;
+
+        storyState.busy = true;
+        storyState.index = index;
+        renderScene(index);
+
+        setTimeout(() => {
+          storyState.busy = false;
+        }, 550);
+      });
+
+      step.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          step.click();
+        }
+      });
+    });
+}
     gsap.to('.story-core',{rotation:720,scale:1.15,ease:'none',scrollTrigger:{trigger:'#vision',start:'top top',end:'bottom bottom',scrub:1}});
     gsap.to('.story-ring',{rotation:360,ease:'none',scrollTrigger:{trigger:'#vision',start:'top top',end:'bottom bottom',scrub:1}});
   }
