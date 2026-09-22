@@ -1,245 +1,344 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Aravind B - Machine Learning Engineer and Healthcare AI Researcher specializing in Explainable AI, medical imaging, MLOps, and embedded intelligence." />
-  <title>Aravind B | AI Researcher & Healthcare Intelligence</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
-</head>
-<body>
-<canvas id="neuralCanvas" aria-hidden="true"></canvas>
-<div class="scroll-progress" id="scrollProgress"></div>
-  <div class="noise" aria-hidden="true"></div>
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
 
-  <header class="site-header">
-    <a class="brand" href="#home"><span>AB</span><strong>ARAVIND B<span class="accent">.</span></strong></a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
-    <nav id="mainNav">
-      <a href="#about">About</a>
-      <a href="#vision">Long-Term Vision</a>
-      <a href="#research">Research</a>
-      <a href="#solutions">Healthcare AI</a>
-      <a href="#projects">Projects</a>
-      <a href="#credentials">Credentials</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="header-controls"><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">◐</button><button class="motion-toggle" id="motionToggle" aria-pressed="false" aria-label="Toggle animations">Reduce motion</button></div>
-  </header>
+$("#year").textContent = new Date().getFullYear();
 
-  <main>
-    <section id="home" class="hero section">
-      <div class="hero-copy reveal">
-        <div class="eyebrow"><span class="pulse"></span> AI Researcher · Healthcare Intelligence · MLOps</div>
-        <h1>Engineering <span class="gradient-text">explainable intelligence</span> for healthcare.</h1>
-        <p class="hero-text">Machine Learning Engineer and Healthcare AI Researcher exploring medical imaging, transparent deep learning, clinical decision support, and real-time intelligent systems.</p>
-        <div class="hero-actions">
-          <a class="btn primary" href="#research">Explore my research ↗</a>
-          <a class="btn primary highlight-action" href="cv.pdf" download>Download my CV ↓</a>
-          <button class="btn primary highlight-action" id="openChat">Ask my AI assistant ✦</button>
-        </div>
-        <div class="hero-links">
-        </div>
-      </div>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add("visible"); });
+}, {threshold:.12});
+$$(".reveal").forEach(el => observer.observe(el));
 
-      <div class="hero-visual reveal">
-        <div class="orbital-card">
-          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-          <div class="core"><span>AI</span><small>HEALTHCARE</small></div>
-          <div class="orbit-node node-one">MRI</div>
-          <div class="orbit-node node-two">XAI</div>
-          <div class="orbit-node node-three">MLOps</div>
-          <div class="orbit-node node-four">CNN</div>
-        </div>
-        <div class="floating-card card-top"><span class="status-dot"></span> Currently researching<br><strong>Explainable multimodal AI</strong></div>
-        <div class="floating-card card-bottom">Medical imaging <span>↗</span><br><strong>From pixels to insight</strong></div>
-      </div>
-    </section>
+$("#menuToggle").addEventListener("click", () => $("#mainNav").classList.toggle("open"));
+$$("nav a").forEach(a => { a.addEventListener("click", event => { $("#mainNav").classList.remove("open");
 
-    <section class="metrics section narrow reveal metrics-single-line">
-      <div><strong>10+</strong><span>Years experience</span></div>
-      <div><strong>3</strong><span>Publications</span></div>
-      <div><strong>2</strong><span>Professional certifications</span></div>
-      <div><strong>94%+</strong><span>Model accuracy</span></div>
-    </section>
+    if (a.getAttribute("href") === "#vision") {
+      event.preventDefault();
 
-    <section id="about" class="section split">
-      <div class="section-label reveal">01 / About</div>
-      <div class="section-content reveal">
-        <h2>Research-minded engineering with a healthcare mission.</h2>
-        <p>Dedicated Machine Learning Engineer and Healthcare AI Researcher with experience in applied machine learning, computer vision, medical imaging, NLP, and MLOps. My work connects research concepts with deployable, reproducible AI systems.</p>
-        <p>I am especially interested in making medical AI more transparent, clinically meaningful, scalable, and accessible across cloud and resource-constrained environments.</p>
-        <div class="tag-cloud">
-          <span>Explainable AI</span><span>Medical Imaging</span><span>Deep Learning</span><span>Clinical AI</span><span>MLOps</span><span>Embedded Intelligence</span>
-        </div>
-      </div>
-    </section>
+      const vision = document.getElementById("vision");
 
-    <section id="vision" class="story-section">
-  <div class="story-pin">
-    <div class="section-label">02 / Long-Term Research Vision</div>
-    <div class="story-copy">
-      <p class="story-kicker">FROM SIGNALS TO CLINICAL INTELLIGENCE</p>
-      <h2 id="storyTitle">Understand the patient.</h2>
-      <p id="storyText">Build a generalizable Medical AI Foundation Model that understands how diseases evolve in individual patients.</p>
-      <div class="story-stepper"><span class="active">01</span><span>02</span><span>03</span><span>04</span></div>
-    </div>
-    <div class="story-visual"><div class="story-orbit"></div><div class="story-core">AI</div><div class="story-ring ring-a"></div><div class="story-ring ring-b"></div></div>
-  </div>
-</section>
-<section id="research" class="section research-section">
-      <div class="section-label reveal">03 / Research focus</div>
-      <div class="section-content">
-        <div class="research-heading reveal">
-          <h2>Making medical AI more understandable.</h2>
-          <div class="live-badge"><span class="status-dot"></span> Research status: active</div>
-        </div>
-        <div class="research-grid">
-          <article class="research-card featured reveal">
-            <span class="card-index">01</span>
-            <div class="icon-large">⌬</div>
-            <h3>Explainable Alzheimer’s AI</h3>
-            <p>Exploring early Alzheimer’s disease detection using multimodal MRI, hybrid CNN architectures, Grad-CAM, SHAP, clinical decision support, and reproducible MLOps workflows.</p>
-            <div class="mini-flow"><span>Medical data</span><b>→</b><span>Deep model</span><b>→</b><span>Explanation</span></div>
-          </article>
-          <article class="research-card reveal">
-            <span class="card-index">02</span><div class="icon-large">◈</div>
-            <h3>Clinical decision support</h3>
-            <p>Designing transparent machine learning workflows that help connect model outputs with meaningful clinical context and validation.</p>
-          </article>
-          <article class="research-card reveal">
-            <span class="card-index">03</span><div class="icon-large">⟡</div>
-            <h3>Healthcare MLOps</h3>
-            <p>Scalable, containerized, monitored, and reproducible machine learning pipelines for real-world healthcare environments.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+      if (vision) {
+        vision.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    }
+  });
+});
 
-    <section id="solutions" class="section split">
-      <div class="section-label reveal">04 / Healthcare AI</div>
-      <div class="section-content reveal">
-        <h2>From healthcare challenges to intelligent solutions.</h2>
-        <div class="solution-list">
-          <div><span>01</span><div><h3>Medical imaging intelligence</h3><p>Classification, feature extraction, image processing, segmentation, and anomaly detection.</p></div></div>
-          <div><span>02</span><div><h3>Explainability and trust</h3><p>Grad-CAM, SHAP, interpretable workflows, and transparent model communication.</p></div></div>
-          <div><span>03</span><div><h3>Production-ready AI</h3><p>Dockerized pipelines, cloud deployment, monitoring, validation, and MLOps automation.</p></div></div>
-          <div><span>04</span><div><h3>Embedded AI</h3><p>Deploying intelligent systems on resource-constrained and real-time platforms.</p></div></div>
-        </div>
-      </div>
-    </section>
 
-    <section id="projects" class="section">
-      <div class="section-label reveal">05 / Selected projects</div>
-      <div class="section-content">
-        <h2 class="reveal">Applied intelligence, measurable outcomes.</h2>
-        <div class="project-grid">
-          <article class="project-card reveal"><div class="project-number">01</div><div class="project-meta">Healthcare AI · Medical Imaging</div><h3>Chest Disease Detection</h3><p>Deep learning-based medical image analysis using CNN, ResNet, and DenseNet architectures.</p><div class="project-stat">92% <span>reported accuracy</span></div><div class="tech-row"><span>CNN</span><span>ResNet</span><span>DenseNet</span></div></article>
-          <article class="project-card reveal"><div class="project-number">02</div><div class="project-meta">Computer Vision · Real-time</div><h3>Automatic License Plate Recognition</h3><p>Real-time license plate detection and recognition optimized for embedded systems.</p><div class="project-stat">94.21% <span>reported accuracy</span></div><div class="project-stat">45 FPS <span>reported speed</span></div><div class="tech-row"><span>YOLOv8</span><span>EasyOCR</span></div></article>
-          <article class="project-card reveal"><div class="project-number">03</div><div class="project-meta">Healthcare · Screening</div><h3>Breast Cancer Screening</h3><p>Microcalcification classification using Shearlet Transform and Support Vector Machines.</p><div class="project-stat">Enhanced <span>diagnostic sensitivity over traditional wavelet methods</span></div><div class="tech-row"><span>Shearlet</span><span>SVM</span></div></article>
-          <article class="project-card reveal"><div class="project-number">04</div><div class="project-meta">Healthcare Platform · Research</div><h3>Integrated Healthcare Platform</h3><p>Healthcare system platform using deep convolutional neural networks and integrated workflows.</p><div class="project-stat">DCNN <span>healthcare platform architecture</span></div><div class="tech-row"><span>DCNN</span><span>Healthcare</span></div></article>
-        </div>
-      </div>
-    </section>
+$("#themeToggle").addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  $("#themeToggle").textContent = document.body.classList.contains("light") ? "☀" : "◐";
+});
 
-    <section class="section experience-section">
-      <div class="section-label reveal">06 / Experience</div>
-      <div class="section-content">
-        <h2 class="reveal">A decade of moving ideas into systems.</h2>
-        <div class="timeline">
-          <div class="timeline-item reveal"><span>2024 - 2026</span><div><h3>Senior ML Engineer · Quantum Techworks</h3><p>Intelligent automation, explainability, healthcare AI platforms, MLOps, Azure, technical leadership.</p></div></div>
-          <div class="timeline-item reveal"><span>2023 - 2024</span><div><h3>Senior ML Engineer · Intellitech Solutions</h3><p>Healthcare deep learning, enterprise LLM chatbot, AKS-based MLOps, research and R&D leadership.</p></div></div>
-          <div class="timeline-item reveal"><span>2019 - 2022</span><div><h3>ML Engineer · Intel TechWorks</h3><p>Computer vision, NLP, real-time analytics, healthcare AI, data pipelines, embedded ML.</p></div></div>
-          <div class="timeline-item reveal"><span>2014 - 2018</span><div><h3>Embedded Systems & Project Training</h3><p>Embedded C/C++, microcontrollers, RTOS, sensors, academic training, and real-time systems.</p></div></div>
-        </div>
-      </div>
-    </section>
+let reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const motionToggle = $("#motionToggle");
+function applyMotionPreference(){
+  document.body.classList.toggle("reduce-motion", reducedMotion);
+  if(motionToggle){ motionToggle.setAttribute("aria-pressed", String(reducedMotion)); motionToggle.textContent = reducedMotion ? "Enable motion" : "Reduce motion"; }
+}
+if(motionToggle) motionToggle.addEventListener("click", () => { reducedMotion = !reducedMotion; applyMotionPreference(); });
+applyMotionPreference();
 
-    <section id="education" class="section education-section">
-<div class="section-label reveal">07 / Education</div>
-<div class="education-card reveal"><div><span class="eyebrow">ACADEMIC FOUNDATION</span><h2>MSc - Coventry University, United Kingdom</h2><p>Master of Science awarded with <strong>Distinction</strong>, strengthening the academic foundation for embedded systems and research-led machine learning and healthcare AI.</p></div><div class="degree-mark">MSc<br><small>DISTINCTION</small></div></div>
-</section>
-<section id="credentials" class="section split">
-      <div class="section-label reveal">08 / Credentials</div>
-      <div class="section-content">
-        <h2 class="reveal">Research, recognition, and continuous learning.</h2>
-        <div class="credential-grid">
-          <article class="credential-card reveal"><span class="credential-icon">🏆</span><h3>Pan India Best Employee of the Year</h3><p>SBI Cards · 2015</p><small>Recognition for exceptional performance in card operations.</small></article>
-          <article class="credential-card reveal"><span class="credential-icon">✦</span><h3>IBM AI Engineering Professional Certificate</h3><p>IBM · 2020</p><small>Professional certification in AI engineering.</small></article>
-          <article class="credential-card reveal"><span class="credential-icon">✚</span><h3>AI for Medicine Specialization</h3><p>Coursera · 2020</p><small>Specialization focused on applications of AI in medicine.</small></article>
-        </div>
-        <h3 class="subheading reveal publications-heading"><span>Publications</span><small>Selected research contributions</small></h3>
-        <div class="publication-list">
-          <a href="https://link.springer.com/chapter/10.1007/978-3-031-60140-8_1#citeas" class="publication reveal" target="_blank" rel="noreferrer"><span>2024</span><strong>Design and Development of an Integrated Healthcare Platform Using DCNNs</strong><em>Springer ↗</em></a>
-          <a href="#" class="publication reveal"><span>2018</span><strong>Automatic Human Defense System Using Nanoids</strong><em>IJIEMR ↗</em></a>
-          <a href="#" class="publication reveal"><span>2018</span><strong>Advanced Home Automation and Security System Using IoT Technology</strong><em>IJEMR ↗</em></a>
-        </div>
-      </div>
-    </section>
+const viewKey = "aravind_portfolio_views";
+let views = Number(localStorage.getItem(viewKey) || 0) + 1;
+localStorage.setItem(viewKey, views);
+$("#viewCount").textContent = views.toLocaleString();
 
-    <section class="section tech-section">
-      <div class="section-label reveal">09 / Technology stack</div>
-      <div class="section-content">
-        <h2 class="reveal">A multidisciplinary toolkit.</h2>
-        <div class="tech-dashboard reveal" id="techDashboard">
-          <div class="toolkit-filter" aria-label="Technology categories">
-            <button class="toolkit-filter-btn" data-toolkit="all">All</button>
-            <button class="toolkit-filter-btn" data-toolkit="programming">Programming</button>
-            <button class="toolkit-filter-btn active" data-toolkit="ml">ML / DL</button>
-            <button class="toolkit-filter-btn" data-toolkit="imaging">Imaging</button>
-            <button class="toolkit-filter-btn" data-toolkit="databases">Databases</button>
-            <button class="toolkit-filter-btn" data-toolkit="cloud">Cloud</button>
-            <button class="toolkit-filter-btn" data-toolkit="embedded">Embedded</button>
-            <button class="toolkit-filter-btn" data-toolkit="mlops">MLOps</button>
-          </div>
-          <div class="toolkit-display" aria-live="polite">
-            <div class="toolkit-display-label">TECHNOLOGY STACK / <span id="toolkit-current">ML / DL</span></div>
-            <div id="toolkit-items" class="toolkit-items"></div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="contact" class="section contact-section">
-      <div class="contact-panel reveal">
-        <div class="section-label">10 / Contact</div>
-        <h2>Let’s build something meaningful.</h2>
-        <p>Open to research conversations, PhD opportunities, collaboration, and technically challenging AI projects.</p>
-        <div class="contact-details">
-          <div class="contact-action">
-            <button class="contact-link email-reveal-btn" type="button" aria-expanded="false"><strong>Email me ↗</strong></button>
-            <a class="revealed-email" id="contactEmail" href="mailto:aravi.nano@gmail.com" hidden>aravi.nano@gmail.com</a>
-          </div>
-          <a class="contact-link highlighted-contact" href="https://linkedin.com/in/aravind-b-a7a5917b" target="_blank" rel="noreferrer"><strong>LinkedIn ↗</strong></a>
-          <a class="contact-link highlighted-contact" href="https://github.com/aravindb212" target="_blank" rel="noreferrer"><strong>GitHub ↗</strong></a>
-        </div>
-        <div class="cv-qr">
-          <img src="CV-Download-QR.png" alt="QR code to download Aravind's CV">
-          <div><strong>Scan to Download CV</strong></div>
-        </div>
-      </div>
-    </section>
-  </main>
 
-  <footer><span>© <span id="year"></span> ARAVIND B</span><span>Built around research, responsibility, and intelligent systems.</span><span><strong id="viewCount">0</strong> Profile views</span></footer>
+const chatPanel = $("#chatPanel");
+const chatBackdrop = $("#chatBackdrop");
+function toggleChat(open) {
+  chatPanel.classList.toggle("open", open);
+  chatBackdrop.classList.toggle("open", open);
+}
+$("#openChat").addEventListener("click", () => toggleChat(true));
+$("#closeChat").addEventListener("click", () => toggleChat(false));
+chatBackdrop.addEventListener("click", () => toggleChat(false));
 
-  <aside class="chat-panel" id="chatPanel" aria-label="AI research assistant">
-    <div class="chat-header"><div><span class="status-dot"></span><strong>Aravi AI Assistant</strong><small>Portfolio knowledge assistant</small></div><button id="closeChat">×</button></div>
-    <div class="chat-messages" id="chatMessages"><div class="message bot">Hello! I’m Aravind’s portfolio assistant. Ask me about his research, projects, publications, skills, certifications, or collaboration opportunities.</div></div>
-    <div class="suggestions"><button>What is his research focus?</button><button>Tell me about Alzheimer’s AI.</button><button>What are his certifications?</button></div>
-    <form id="chatForm"><input id="chatInput" placeholder="Ask about Aravind..." autocomplete="off" /><button aria-label="Send">➤</button></form>
-    <small class="chat-note">Demo assistant using portfolio knowledge. Connect a secure AI backend for live model responses.</small>
-  </aside>
-  <div class="chat-backdrop" id="chatBackdrop"></div>
+const knowledge = [
+{keys:["who","about","aravind","profile"],answer:"Aravind Bommalata is a Machine Learning Engineer and Healthcare AI Researcher working across medical imaging, explainable AI, deep learning, NLP, MLOps, and embedded intelligence, with a focus on practical healthcare and early Alzheimer’s research."},
+{keys:["education","educational","academic","academics","studied","study","degree","qualification","masters","master","msc"],answer:"Aravind completed an MSc with Distinction at Coventry University, United Kingdom. His earlier engineering and embedded-systems background supported his transition into machine learning and healthcare AI."},
+{keys:["experience","career","worked","work","employment","professional","years","timeline","history"],answer:"Aravind’s career spans embedded systems, engineering, machine learning, and senior ML engineering. His roles include Senior ML Engineer at Quantum Techworks and Intellitech Solutions, ML Engineer at Intel TechWorks, and earlier embedded-systems training and engineering positions. The portfolio CV should be consulted for exact dates and role-by-role details."},
+{keys:["research","alzheimer","healthcare","medical","imaging","explainable"],answer:"His research interests include explainable AI for early Alzheimer’s detection using multimodal MRI, deep learning, Grad-CAM, SHAP, hybrid CNN architectures, clinical decision support, and reproducible MLOps workflows."},
+{keys:["project","projects","license","plate","alpr","chest","cancer"],answer:"Selected work includes Chest Disease Detection using CNN/ResNet/DenseNet, Automatic License Plate Recognition using YOLOv8 and EasyOCR, Breast Cancer Screening using Shearlet Transform and SVM, and an Integrated Healthcare Platform using DCNNs."},
+{keys:["publication","publications","paper","published"],answer:"His publications include a 2024 Springer chapter on Design and Development of an Integrated Healthcare Platform Using DCNNs, plus 2018 publications on Automatic Human Defense System Using Nanoids and Advanced Home Automation and Security System Using IoT Technology."},
+{keys:["skills","skill","technology","technologies","tools","stack"],answer:"His toolkit includes Python, MATLAB, Java, Embedded C/C++, TensorFlow, PyTorch, Keras, LLMs, CNNs, GNNs, OpenCV, YOLOv8, EasyOCR, Tesseract, SHAP, Grad-CAM, MLflow, Docker, cloud platforms, CI/CD, embedded platforms, and databases."},
+{keys:["certification","certifications","certificate"],answer:"Listed certifications include the IBM AI Engineering Professional Certificate and AI for Medicine Specialization, both from 2020."},
+{keys:["award","awards","achievement"],answer:"His CV lists Pan India Best Employee of the Year from SBI Cards in 2015, along with published-researcher recognition and industry experience across healthcare AI and embedded systems."},
+{keys:["cv","resume","download"],answer:"Use the Download my CV button near the top of the portfolio or the QR code in the Contact section."}
+];
+const cvFacts = knowledge.map(k=>({text:k.answer, tokens:k.keys}));
+function getReply(text){
+ const q=String(text||"").toLowerCase().normalize("NFKD").replace(/[^\w\s]/g," ").replace(/\s+/g," ").trim();
+ const words=q.split(" ").filter(w=>w.length>2);
+ if(!words.length) return "Ask me anything about Aravind’s CV, research, education, career, projects, publications, skills, or certifications.";
+ const scored=cvFacts.map(item=>({item,score:words.reduce((n,w)=>n+(item.tokens.some(k=>k.includes(w)||w.includes(k))?1:0),0)})).sort((a,b)=>b.score-a.score);
+ if(scored[0].score>0) return scored[0].item.text;
+ return "I couldn’t find a reliable answer to that in the portfolio knowledge available to me. Try asking about a specific aspect of Aravind’s education, career, research, projects, publications, skills, or certifications.";
+}
+function addMessage(text, type){
+  const el = document.createElement("div");
+  el.className = `message ${type}`;
+  el.textContent = text;
+  $("#chatMessages").appendChild(el);
+  $("#chatMessages").scrollTop = $("#chatMessages").scrollHeight;
+}
+function submitChat(text){
+  if(!text.trim()) return;
+  addMessage(text,"user");
+  $("#chatInput").value = "";
+  setTimeout(() => addMessage(getReply(text),"bot"), 350);
+}
+$("#chatForm").addEventListener("submit", e => {e.preventDefault();submitChat($("#chatInput").value);});
+$$(".suggestions button").forEach(b => b.addEventListener("click", () => submitChat(b.textContent)));
 
-  <script src="script.js"></script>
-<button id="chatbot-fab" class="chatbot-fab" type="button" aria-label="Open AI assistant" title="Open AI assistant"><span class="nanobot-label">NanoBot</span><span class="nanobot-symbol">✦</span></button>
-</body>
-</html>
+const canvas = $("#neuralCanvas"), ctx = canvas.getContext("2d");
+let particles = [], width, height, animationFrame;
+function resize(){width=canvas.width=innerWidth; height=canvas.height=innerHeight; particles=Array.from({length:Math.min(75,Math.floor(width/18))},()=>({x:Math.random()*width,y:Math.random()*height,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.7+.5}));}
+function draw(){
+  if(document.body.classList.contains("reduce-motion")){ ctx.clearRect(0,0,width,height); animationFrame=null; return; }
+  ctx.clearRect(0,0,width,height);
+  const light=document.body.classList.contains("light");
+  const color=light?"35,110,105":"109,240,198";
+  particles.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>width)p.vx*=-1;if(p.y<0||p.y>height)p.vy*=-1;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${color},.88)`;ctx.fill();
+    particles.forEach(q=>{
+      const d=Math.hypot(p.x-q.x,p.y-q.y);
+      if(d<125){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(${color},${.24*(1-d/125)})`;ctx.stroke();}
+    });
+  });
+  animationFrame=requestAnimationFrame(draw);
+}
+resize();addEventListener("resize",resize);draw();
+
+/* Premium motion engine: Lenis + GSAP ScrollTrigger + Three.js */
+(function(){
+  const progress=document.getElementById('scrollProgress');
+  const lenis=window.Lenis?new Lenis({duration:1.15,smoothWheel:true,smoothTouch:false}):null;
+  if(lenis){lenis.on('scroll',()=>ScrollTrigger.update());gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);}
+  if(window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+    if(progress) window.addEventListener('scroll',()=>progress.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%');
+  const title=document.getElementById('storyTitle'), text=document.getElementById('storyText');
+  const scenes=[
+    ['Understand the patient.','Create a generalizable Medical AI Foundation Model that can read multimodal clinical signals and understand disease evolution.'],
+    ['Predict the trajectory.','Model how disease may progress in an individual patient-not only what is visible today, but what may happen next.'],
+    ['Simulate interventions.','Construct a causal digital twin to explore possible interventions and their consequences before clinical decisions are made.'],
+    ['Support better decisions.','Unify understanding, prediction, and simulation into personalized clinical decision support across multiple diseases.']
+  ];
+  if(title&&window.gsap){
+    const vision=document.querySelector('#vision');
+    const storyState={index:0,last:0,busy:false,entered:false};
+    const renderScene=(i)=>{
+      const s=scenes[i];
+      title.textContent=s[0];
+      text.textContent=s[1];
+      document.querySelectorAll('.story-stepper span').forEach((n,j)=>n.classList.toggle('active',i===j));
+      gsap.fromTo([title,text],{y:18,opacity:.35},{y:0,opacity:1,duration:.48,ease:'power2.out',stagger:.05});
+    };
+    renderScene(0);
+    if(vision){
+      vision.addEventListener('wheel',(event)=>{
+        if(Math.abs(event.deltaY)<8 || storyState.busy) return;
+        const rect=vision.getBoundingClientRect();
+        const inside=rect.top<=window.innerHeight*.28 && rect.bottom>=window.innerHeight*.72;
+        if(!inside) return;
+        if(!storyState.entered){ storyState.entered=true; storyState.index=0; renderScene(0); }
+        const direction=event.deltaY>0?1:-1;
+        const atFirst=storyState.index===0 && direction<0;
+        const atLast=storyState.index===scenes.length-1 && direction>0;
+        // Keep the final research stage visible for one complete scroll gesture.
+        if(atLast){
+          // After Stage 04, one additional wheel gesture advances directly
+          // to the next section instead of requiring several scrolls.
+          const nextSection=document.getElementById('research');
+          if(nextSection){
+            event.preventDefault();
+            storyState.busy=true;
+            nextSection.scrollIntoView({behavior:'smooth',block:'start'});
+            setTimeout(()=>{storyState.busy=false;},700);
+          }
+          return;
+        }
+        if(atFirst && direction<0) return;
+        event.preventDefault();
+        const next=Math.max(0,Math.min(scenes.length-1,storyState.index+direction));
+        if(next===storyState.index) return;
+        storyState.busy=true;
+        storyState.index=next;
+        renderScene(next);
+        setTimeout(()=>storyState.busy=false,520);
+      },{passive:false});
+    }
+    gsap.to('.story-core',{rotation:720,scale:1.15,ease:'none',scrollTrigger:{trigger:'#vision',start:'top top',end:'bottom bottom',scrub:1}});
+    gsap.to('.story-ring',{rotation:360,ease:'none',scrollTrigger:{trigger:'#vision',start:'top top',end:'bottom bottom',scrub:1}});
+  }
+  const reveal=document.getElementById('emailReveal'), address=document.getElementById('emailAddress');
+  if(reveal) reveal.addEventListener('click',()=>{address.hidden=false;reveal.hidden=true;window.location.href='mailto:aravi.nano@gmail.com';});
+})();
+
+/* Final interaction fixes */
+document.addEventListener('DOMContentLoaded',()=>{
+  const emailTrigger=document.querySelector('.email-trigger');
+  const revealedEmail=document.querySelector('.revealed-email');
+  if(emailTrigger&&revealedEmail){
+    emailTrigger.addEventListener('click',()=>{
+      const isHidden=revealedEmail.hasAttribute('hidden');
+      if(isHidden) revealedEmail.removeAttribute('hidden');
+      else revealedEmail.setAttribute('hidden','');
+      emailTrigger.setAttribute('aria-expanded',String(isHidden));
+    });
+  }
+  const fab=document.getElementById('chatbot-fab');
+  const chatPanel=document.querySelector('.chat-panel, #chatPanel, [data-chat-panel]');
+  const chatButton=document.querySelector('[aria-label*="assistant" i]:not(#chatbot-fab), .ai-assistant-btn, .chat-toggle');
+  const revealFab=()=>{
+    if(fab) fab.classList.toggle('is-visible',window.scrollY>window.innerHeight*.65);
+  };
+  window.addEventListener('scroll',revealFab,{passive:true});
+  revealFab();
+  if(fab){
+    fab.addEventListener('click',()=>{
+      if(chatButton) chatButton.click();
+      else if(chatPanel) chatPanel.classList.toggle('open');
+    });
+  }
+});
+
+/* Compact toolkit filters and reliable NanoBot launcher */
+document.addEventListener('DOMContentLoaded',()=>{
+  const toolkitData={
+    all:['TensorFlow','PyTorch','Keras','LLMs','Explainable AI','CNN','GNN','Python','MATLAB','Java','Embedded C/C++','OpenCV','YOLOv8','EasyOCR','Tesseract','Image Segmentation','Anomaly Detection','NLTK','TextBlob','Tokenization','Named Entity Recognition','MLflow','Docker','Git','Jira','Jenkins','Grafana','Azure','AWS','GCP','REST APIs','Microservices','FPGA','Arduino','STM32','Beaglebone Black','8052','PIC','MySQL','SQL','MongoDB','Cassandra'],
+    programming:['Python','MATLAB','Java','Embedded C/C++'],
+    ml:['TensorFlow','PyTorch','Keras','LLMs','Explainable AI','CNN','GNN'],
+    imaging:['OpenCV','YOLOv8','EasyOCR','Tesseract','Image Segmentation','Anomaly Detection','SHAP','Grad-CAM'],
+    databases:['MySQL','SQL','MongoDB','Cassandra'],
+    cloud:['Azure','AWS','GCP','REST APIs','Microservices'],
+    embedded:['FPGA','Arduino','STM32','Beaglebone Black','8052','PIC'],
+    mlops:['MLflow','Docker','Git','Jira','Jenkins','Grafana']
+  };
+  const buttons=document.querySelectorAll('.toolkit-filter-btn');
+  const items=document.getElementById('toolkit-items');
+  const current=document.getElementById('toolkit-current');
+  buttons.forEach(btn=>btn.addEventListener('click',()=>{
+    const key=btn.dataset.toolkit;
+    buttons.forEach(b=>b.classList.toggle('active',b===btn));
+    current.textContent=key.toUpperCase();
+    items.innerHTML=toolkitData[key].map(item=>`<span>${item}</span>`).join('');
+  }));
+
+  const fab=document.getElementById('chatbot-fab');
+  if(fab){
+    const possible=document.querySelectorAll('.chat-toggle,.ai-assistant-btn,[aria-label*="assistant" i]');
+    fab.addEventListener('click',()=>{
+      const target=[...possible].find(el=>el!==fab);
+      if(target){target.click();return;}
+      const panel=document.querySelector('.chat-panel,#chatPanel,[data-chat-panel]');
+      if(panel){
+        panel.classList.add('open','active');
+        panel.style.display='flex';
+        panel.setAttribute('aria-hidden','false');
+      }
+    });
+  }
+});
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const toolkitData = {
+    all:['Python','MATLAB','Java','Embedded C/C++','TensorFlow','PyTorch','Keras','LLMs','CNN','GNN','OpenCV','YOLOv8','EasyOCR','Tesseract','Image Segmentation','Anomaly Detection','SHAP','Grad-CAM','NLTK','TextBlob','Tokenization','Named Entity Recognition','MLflow','Docker','Git','Jira','Jenkins','Grafana','Azure','AWS','GCP','REST APIs','Microservices','FPGA','Arduino','STM32','Beaglebone Black','8052','PIC','MySQL','SQL','MongoDB','Cassandra'],
+    programming:['Python','MATLAB','Java','Embedded C/C++'],
+    ml:['TensorFlow','PyTorch','Keras','LLMs','CNN','GNN','Explainable AI'],
+    imaging:['OpenCV','YOLOv8','EasyOCR','Tesseract','Image Segmentation','Anomaly Detection','SHAP','Grad-CAM'],
+    databases:['MySQL','SQL','MongoDB','Cassandra'],
+    cloud:['Azure','AWS','GCP','REST APIs','Microservices'],
+    embedded:['FPGA','Arduino','STM32','Beaglebone Black','8052','PIC'],
+    mlops:['MLflow','Docker','Git','Jira','Jenkins','Grafana']
+  };
+  const buttons=document.querySelectorAll('.toolkit-filter-btn');
+  const items=document.getElementById('toolkit-items');
+  const current=document.getElementById('toolkit-current');
+  function renderToolkit(key){
+    if(!items) return;
+    current.textContent=key==='ml'?'ML / DL':key.charAt(0).toUpperCase()+key.slice(1);
+    items.innerHTML=toolkitData[key].map(item=>`<span>${item}</span>`).join('');
+  }
+  buttons.forEach(btn=>btn.addEventListener('click',()=>{
+    buttons.forEach(b=>b.classList.toggle('active',b===btn));
+    renderToolkit(btn.dataset.toolkit);
+  }));
+  renderToolkit('ml');
+
+  const fab=document.getElementById('chatbot-fab');
+  if(fab) fab.addEventListener('click',()=>{
+    const panel=document.getElementById('chatPanel');
+    const backdrop=document.getElementById('chatBackdrop');
+    const opening=panel && !panel.classList.contains('open');
+    if(panel){ panel.classList.toggle('open',opening); panel.setAttribute('aria-hidden',String(!opening)); }
+    if(backdrop) backdrop.classList.toggle('open',opening);
+    const input=document.getElementById('chatInput');
+    if(opening && input) setTimeout(()=>input.focus(),180);
+  });
+
+});
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const emailBtn=document.querySelector('.email-reveal-btn');
+  const email=document.getElementById('contactEmail');
+  if(emailBtn&&email) emailBtn.addEventListener('click',()=>{
+    const show=email.hasAttribute('hidden');
+    if(show) email.removeAttribute('hidden'); else email.setAttribute('hidden','');
+    emailBtn.setAttribute('aria-expanded',String(show));
+  });
+});
+
+/* Medical-AI neural background parallax layer */
+(() => {
+  const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  let targetX=0,targetY=0,currentX=0,currentY=0,scrollTarget=0,scrollCurrent=0;
+  window.addEventListener('pointermove', e => {
+    targetX=(e.clientX/window.innerWidth-.5)*18;
+    targetY=(e.clientY/window.innerHeight-.5)*12;
+  }, {passive:true});
+  window.addEventListener('scroll', () => {
+    scrollTarget=window.scrollY;
+  }, {passive:true});
+  function parallax(){
+    currentX += (targetX-currentX)*.035;
+    currentY += (targetY-currentY)*.035;
+    scrollCurrent += (scrollTarget-scrollCurrent)*.045;
+    const depth = Math.min(scrollCurrent*.018, 24);
+    canvas.style.transform=`translate3d(${currentX*.22}px,${currentY*.22-depth*.35}px,0) scale(${1+depth*.0015})`;
+    requestAnimationFrame(parallax);
+  }
+  parallax();
+})();
+
+
+
+/* Broader CV-grounded chatbot intent routing */
+(function(){
+ const original=window.getReply;
+ if(typeof original!=='function') return;
+ const cvReplies={
+  bio:"Aravind Bommalata is a Machine Learning Engineer and Healthcare AI Researcher working across medical imaging, explainable AI, deep learning, NLP, MLOps, and embedded intelligence. His work focuses on building transparent, practical AI systems - especially for healthcare and early Alzheimer’s disease research.",
+  experience:"Aravind has 10+ years of technology experience across machine learning, healthcare AI, embedded systems, and engineering roles, including Senior ML Engineer and ML Engineer positions.",
+  education:"Aravind completed an MSc with Distinction at Coventry University in the United Kingdom. His background also includes engineering and embedded-systems training, supporting his transition into machine learning and healthcare AI.",
+  birth:"I focus on research and engineering milestones rather than private biographical details. Aravind’s professional journey includes 10+ years of technology experience, an MSc with Distinction from Coventry University, and work in healthcare AI, explainable machine learning, and MLOps.",
+  cv:"You can download Aravind Bommalata’s CV using the Download my CV button near the top of the portfolio or the Scan to Download CV QR code in the Contact section."
+ };
+ window.getReply=function(text){const q=String(text||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+  if(/\b(who is|who s|tell me about|introduce|who is he|who he is)\b/.test(q)&&/aravind|he\b/.test(q))return cvReplies.bio;
+  if(/\b(how many|number of|years|experience|worked|career|work history|last \d+ years)\b/.test(q))return cvReplies.experience;
+  if(/\b(education|educational|studied|study|degree|qualification|academic|what did he study)\b/.test(q))return cvReplies.education;
+  if(/\b(born|birth|age|how old|live|lives|location|where does he work from)\b/.test(q))return cvReplies.birth;
+  if(/\b(download|access|get|show me|where is)\b/.test(q)&&/\b(cv|resume|curriculum vitae)\b/.test(q)||/\b(cv|resume)\b/.test(q)&&/\b(download|get)\b/.test(q))return cvReplies.cv;
+  return original(text);
+ };
+})();
