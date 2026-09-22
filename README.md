@@ -21,7 +21,7 @@ Advanced static portfolio website for Aravind B.
 
 Upload the contents of this folder to the root of:
 
-`https://github.com/aravindb212/aravind-nano.github.io`
+`https://github.com/aravindb212/nano-portfolio.com`
 
 Ensure these files are in the repository root:
 
