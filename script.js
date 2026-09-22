@@ -9,7 +9,23 @@ const observer = new IntersectionObserver(entries => {
 $$(".reveal").forEach(el => observer.observe(el));
 
 $("#menuToggle").addEventListener("click", () => $("#mainNav").classList.toggle("open"));
-$$("nav a").forEach(a => a.addEventListener("click", () => $("#mainNav").classList.remove("open")));
+$$("nav a").forEach(a => { a.addEventListener("click", event => { $("#mainNav").classList.remove("open");
+
+    if (a.getAttribute("href") === "#vision") {
+      event.preventDefault();
+
+      const vision = document.getElementById("vision");
+
+      if (vision) {
+        vision.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    }
+  });
+});
+
 
 $("#themeToggle").addEventListener("click", () => {
   document.body.classList.toggle("light");
@@ -106,7 +122,7 @@ resize();addEventListener("resize",resize);draw();
   const lenis=window.Lenis?new Lenis({duration:1.15,smoothWheel:true,smoothTouch:false}):null;
   if(lenis){lenis.on('scroll',()=>ScrollTrigger.update());gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);}
   if(window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
-  if(progress) window.addEventListener('scroll',()=>progress.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%');
+    if(progress) window.addEventListener('scroll',()=>progress.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%');
   const title=document.getElementById('storyTitle'), text=document.getElementById('storyText');
   const scenes=[
     ['Understand the patient.','Create a generalizable Medical AI Foundation Model that can read multimodal clinical signals and understand disease evolution.'],
